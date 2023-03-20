@@ -39,8 +39,6 @@ jobs:
               run: helm dep build ${{ env.CONTAINER_NAME }} && helm package ${{ env.CONTAINER_NAME }}
             - name: helm push 
               run: helm push ${{ env.CONTAINER_NAME }}-0.0.${{ env.CONTAINER_NAME_VERSION }}.tgz oci://${{ env.HELM_ARC_URL }}/helm 
-                
-                
             - name: Build and push image to ACR
               run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
     deploy:
@@ -71,4 +69,4 @@ jobs:
                 resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
                 use-kubelogin: "true"
             - name: Deploy application
-              run: helm dependency build ${{ env.CONTAINER_NAME }} && helm upgrade -i -f ${{ env.CHART_OVERRIDE_PATH }} --set ${{ env.CHART_OVERRIDES }} ${{ env.CONTAINER_NAME }}-deployment ${{ env.CHART_PATH }}
+              run: helm upgrade -i -f oci://${{ env.HELM_ARC_URL }}/helm/${{ env.CONTAINER_NAME }} --set ${{ env.CHART_OVERRIDES }} ${{ env.CONTAINER_NAME }}-deployment ${{ env.CHART_PATH }}
