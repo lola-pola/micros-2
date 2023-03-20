@@ -70,7 +70,7 @@ micros-2:
     #   memory: 128Mi
 
   autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 1
     maxReplicas: 5
     targetCPUUtilizationPercentage: 80
