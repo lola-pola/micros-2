@@ -68,5 +68,7 @@ jobs:
                 cluster-name: ${{ env.CLUSTER_NAME }}
                 resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
                 use-kubelogin: "true"
+            - name: helm login 
+              run: helm registry login ${{ env.HELM_ARC_URL }} --password ${{ secrets.HELM_ACR_SEC }} --username ${{ secrets.HELM_ACR_ACCESS }}
             - name: Deploy application
               run: helm upgrade -i ${{ env.CONTAINER_NAME }}-deployment  oci://${{ env.HELM_ARC_URL }}/helm/${{ env.CONTAINER_NAME }} --set ${{ env.CHART_OVERRIDES }} 
