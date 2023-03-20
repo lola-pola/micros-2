@@ -13,6 +13,8 @@ env:
     CLUSTER_NAME: database-cni
     CLUSTER_RESOURCE_GROUP: elhays
     CONTAINER_NAME: micros-2
+    HELM_ARC_URL: databasecni.azurecr.io
+    CONTAINER_NAME_VERSION: ${{github.run_number}}
 jobs:
     buildImage:
         permissions:
@@ -27,6 +29,18 @@ jobs:
                 client-id: ${{ secrets.AZURE_CLIENT_ID }}
                 subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
                 tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            - name: helm login 
+              run: helm registry login ${{ env.HELM_ARC_URL }} --password ${{ secrets.HELM_ACR_SEC }} --username ${{ secrets.HELM_ACR_ACCESS }}
+            - name: bump version chart
+              run: "sed -i 's/version: [0-9].[0-9].[0-9]/version: '0.0.${{ env.CONTAINER_NAME_VERSION }}'/g' micros-1/Chart.yaml"
+            - name: bump version of image  
+              run: "sed -i 's/tag: [0-9]/tag: '${{ env.CONTAINER_NAME_VERSION }}'/g' ${{ env.CONTAINER_NAME }}/values.yaml"              
+            - name: helm dep build . && helm package 
+              run: helm dep build ${{ env.CONTAINER_NAME }} && helm package ${{ env.CONTAINER_NAME }}
+            - name: helm push 
+              run: helm push ${{ env.CONTAINER_NAME }}-0.0.${{ env.CONTAINER_NAME_VERSION }}.tgz oci://${{ env.HELM_ARC_URL }}/helm 
+                
+                
             - name: Build and push image to ACR
               run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
     deploy:
