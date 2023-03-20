@@ -8,7 +8,7 @@ env:
     ACR_RESOURCE_GROUP: elhays
     AZURE_CONTAINER_REGISTRY: databasecni
     CHART_OVERRIDE_PATH: ./micros-2/values.yaml
-    CHART_OVERRIDES: image.repository=databasecni.azurecr.io/micros-2,image.tag=${{ github.sha }}
+    CHART_OVERRIDES: image.repository=databasecni.azurecr.io/micros-2,image.tag=${{github.run_number}}
     CHART_PATH: ./micros-2
     CLUSTER_NAME: database-cni
     CLUSTER_RESOURCE_GROUP: elhays
@@ -40,7 +40,7 @@ jobs:
             - name: helm push 
               run: helm push ${{ env.CONTAINER_NAME }}-0.0.${{ env.CONTAINER_NAME_VERSION }}.tgz oci://${{ env.HELM_ARC_URL }}/helm 
             - name: Build and push image to ACR
-              run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
+              run: az acr build --image ${{ env.CONTAINER_NAME }}:${{github.run_number}} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
     deploy:
         permissions:
             actions: read
