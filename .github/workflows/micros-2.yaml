@@ -69,4 +69,4 @@ jobs:
                 resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
                 use-kubelogin: "true"
             - name: Deploy application
-              run: helm upgrade -i -f oci://${{ env.HELM_ARC_URL }}/helm/${{ env.CONTAINER_NAME }} --set ${{ env.CHART_OVERRIDES }} ${{ env.CONTAINER_NAME }}-deployment ${{ env.CHART_PATH }}
+              run: helm upgrade -i ${{ env.CONTAINER_NAME }}-deployment  oci://${{ env.HELM_ARC_URL }}/helm/${{ env.CONTAINER_NAME }} --set ${{ env.CHART_OVERRIDES }} 
