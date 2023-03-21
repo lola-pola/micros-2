@@ -5,14 +5,14 @@ name: micros-2
             - main
     workflow_dispatch: {}
 env:
+    CONTAINER_NAME: micros-2
     ACR_RESOURCE_GROUP: elhays
     AZURE_CONTAINER_REGISTRY: databasecni
     CHART_OVERRIDE_PATH: ./micros-2/values.yaml
-    CHART_OVERRIDES: image.repository=databasecni.azurecr.io/micros-2,image.tag=${{github.run_number}}
+    CHART_OVERRIDES: micros-2.image.repository=databasecni.azurecr.io/micros-2,micros-2.image.tag=${{github.run_number}}
     CHART_PATH: ./micros-2
     CLUSTER_NAME: database-cni
     CLUSTER_RESOURCE_GROUP: elhays
-    CONTAINER_NAME: micros-2
     HELM_ARC_URL: databasecni.azurecr.io
     CONTAINER_NAME_VERSION: ${{github.run_number}}
 jobs:
