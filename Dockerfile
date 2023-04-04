@@ -1,6 +1,8 @@
-FROM python
+FROM nginx
 
-COPY app .
+# FROM python
 
-RUN pip install -r req 
-CMD ["streamlit", "run" , "app.py","--server.port","80"]
+# COPY app .
+
+# RUN pip install -r req 
+# CMD ["streamlit", "run" , "app.py","--server.port","80"]
